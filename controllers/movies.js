@@ -30,3 +30,18 @@ exports.createNewMovie = function(req, res) {
     .returning("*")
     .then(newMovie => res.json(newMovie));
 };
+
+//Deletes movie from transactions join table first, then deletes movie from inventory complete.
+exports.deleteMovie = function(req, res) {
+  knex("transactions")
+    .del()
+    .where("movie_id", req.params.id)
+    .returning("*")
+    .then(
+      knex("movies")
+        .del()
+        .where("id", req.params.id)
+        .returning("*")
+        .then(updatedMovieList => res.json(updatedMovieList))
+    );
+};

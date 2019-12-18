@@ -32,10 +32,12 @@ exports.updateTransaction = function(req, res) {
     .then(updatedTransactions => res.json(updatedTransactions));
 };
 
-//Creates a new Transaction
+//Cycles through array to put each individual transaction in the transactions database.
 exports.createNewTransaction = function(req, res) {
-  knex("transactions")
-    .insert(req.body)
-    .returning("*")
-    .then(newTransaction => res.json(newTransaction));
+  for (let i = 0; i < req.body.length; i++) {
+    knex("transactions")
+      .insert(req.body[i])
+      .returning("*")
+      .then(newTransaction => res.json(newTransaction));
+  }
 };
